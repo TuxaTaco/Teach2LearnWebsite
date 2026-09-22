@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /t2l-content-studio
+
+Sitemap: https://weteach2learn.com/sitemap.xml

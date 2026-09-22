@@ -297,7 +297,17 @@ function PageRoutes() {
 
 function RouteMeta({ location }) {
   useEffect(() => {
-    if (!location.pathname.startsWith("/t2l-content")) document.title = `Teach2Learn | ${pageTitles[location.pathname] || "Page not found"}`;
+    const isContentStudio = location.pathname.startsWith("/t2l-content");
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!isContentStudio) {
+      document.title = `Teach2Learn | ${pageTitles[location.pathname] || "Page not found"}`;
+      if (!canonical) {
+        canonical = document.createElement("link");
+        canonical.rel = "canonical";
+        document.head.appendChild(canonical);
+      }
+      canonical.href = `https://weteach2learn.com${location.pathname}`;
+    } else canonical?.remove();
     // This runs after the incoming page mounts, and also for same-page links.
     if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView({ behavior: "instant" });
     else window.scrollTo({ top: 0, behavior: "instant" });
