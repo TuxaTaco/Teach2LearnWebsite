@@ -35,6 +35,10 @@ function Arrow({ diagonal = false, className = "" }) {
   return <svg className={`arrow-icon ${className}`} width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d={diagonal ? "M5 19 19 5M5 5h14v14" : "M4 12h15m-6-6 6 6-6 6"} stroke="currentColor" strokeWidth="1.65" strokeLinecap="round" strokeLinejoin="round" /></svg>;
 }
 
+function LinkedInIcon() {
+  return <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.33V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.12 20.45H3.56V9h3.56v11.45Z" /></svg>;
+}
+
 function Header() {
   return (
     <header className="site-header">
@@ -235,7 +239,7 @@ function TeamPage() {
   return (
     <>
       <PageHero image="/events/event-07.jpg" position="center 42%" eyebrow="Our people" title={<>Students first.<br /><em>Mentors, too.</em></>} text="We remember what it’s like to start. Now we’re sharing what we’ve learned, and learning right alongside you." caption="The people who make it possible." />
-      <section className="team section-pad"><div className="team-intro"><div className="section-kicker">Meet the Teach2Learn team</div><p>A shared belief in what students can do.</p></div><div className="team-grid">{team.map((member) => <article className="team-card" key={member.id || member.name}><div className="portrait-wrap"><img src={member.image} alt={member.name} loading="lazy" /></div><div className="team-caption"><h2>{member.name}</h2><p>{member.role}</p></div></article>)}</div></section>
+      <section className="team section-pad"><div className="team-intro"><div className="section-kicker">Meet the Teach2Learn team</div><p>A shared belief in what students can do.</p></div><div className="team-grid">{team.map((member) => <article className="team-card" key={member.id || member.name}><div className="portrait-wrap"><img src={member.image} alt={member.name} loading="lazy" /></div><div className="team-caption"><h2>{member.name}</h2><p>{member.role}</p><div className="team-social-slot">{member.linkedin && <a className="team-social-link" href={member.linkedin} target="_blank" rel="noreferrer" aria-label={`${member.name} on LinkedIn`}><LinkedInIcon /><span>LinkedIn</span><Arrow diagonal /></a>}</div></div></article>)}</div></section>
     </>
   );
 }

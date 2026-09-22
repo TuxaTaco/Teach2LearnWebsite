@@ -253,6 +253,12 @@ svg { flex-shrink:0; }
 .team-caption { padding:20px 0; border-bottom:1px solid #becbd3; }
 .team-caption h2 { font-size:28px; line-height:1.1; letter-spacing:-.04em; }
 .team-caption>p { margin-top:8px; color:var(--muted); font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; }
+.team-social-slot { display:flex; align-items:flex-end; min-height:34px; padding-top:11px; }
+.team-social-link { display:inline-flex; align-items:center; gap:7px; color:#2f6ebc; font-size:10px; font-weight:700; letter-spacing:.035em; transition:color 180ms var(--ease-out); }
+.team-social-link>svg:first-child { width:16px; height:16px; }
+.team-social-link .arrow-icon { width:12px; height:12px; margin-left:2px; transition:transform 180ms var(--ease-out); }
+.team-social-link:hover { color:var(--navy); }
+.team-social-link:hover .arrow-icon { transform:translate(2px,-2px); }
 
 .partners { background:#fcfbf7; padding-top:34px; padding-bottom:36px; border-top:1px solid var(--border); }
 .partners-heading { display:flex; justify-content:space-between; align-items:baseline; gap:30px; margin-bottom:25px; }
@@ -337,6 +343,8 @@ svg { flex-shrink:0; }
 .admin-image-field label { color:var(--blue); cursor:pointer; font-size:10px; }
 .admin-image-field input { position:absolute; width:1px; height:1px; padding:0; opacity:0; overflow:hidden; }
 .admin-fields { display:grid; grid-template-columns:minmax(160px,.8fr) minmax(220px,1.2fr); gap:14px; }
+.admin-fields .admin-wide-field { grid-column:1/-1; }
+.admin-fields label>span { color:#8a9aa7; font-size:9px; font-weight:500; text-transform:none; letter-spacing:0; }
 .admin-item-actions { display:flex; align-items:center; gap:5px; }
 .admin-item-actions button { min-width:34px; height:34px; padding:0 9px; color:#536b80; background:white; border:1px solid #d3dde6; border-radius:4px; font-size:12px; }
 .admin-item-actions .is-danger { color:#a03b3b; }

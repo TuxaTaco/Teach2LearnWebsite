@@ -2,9 +2,9 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { isSupabaseConfigured, supabase } from "./supabase.js";
 
 export const defaultTeam = [
-  { id:"7bc5b4e4-4dd8-4f32-91e0-30e20cd8a8f1", name:"Iris Shen", role:"President", image:"/iris-shen.png", sortOrder:0 },
-  { id:"a97b770b-e648-4a18-b920-70e4af307b7f", name:"Rayhan Papar", role:"Vice President", image:"/rayhan-papar.png", sortOrder:1 },
-  { id:"6a3d932a-4908-4d67-bd75-1a9e0a235f82", name:"Sanjan Sarang", role:"Mentor & Workshop Development Lead", image:"/sanjan-sarang.png", sortOrder:2 },
+  { id:"7bc5b4e4-4dd8-4f32-91e0-30e20cd8a8f1", name:"Iris Shen", role:"President", image:"/iris-shen.png", linkedin:"", sortOrder:0 },
+  { id:"a97b770b-e648-4a18-b920-70e4af307b7f", name:"Rayhan Papar", role:"Vice President", image:"/rayhan-papar.png", linkedin:"", sortOrder:1 },
+  { id:"6a3d932a-4908-4d67-bd75-1a9e0a235f82", name:"Sanjan Sarang", role:"Mentor & Workshop Development Lead", image:"/sanjan-sarang.png", linkedin:"", sortOrder:2 },
 ];
 
 export const defaultBoards = [
@@ -20,7 +20,7 @@ export const defaultBoards = [
 
 const SiteContentContext = createContext({ team:defaultTeam, boards:defaultBoards, loading:false, refresh:async () => {} });
 
-const mapMember = (row) => ({ id:row.id, name:row.name, role:row.role, image:row.image_url, sortOrder:row.sort_order });
+const mapMember = (row) => ({ id:row.id, name:row.name, role:row.role, image:row.image_url, linkedin:row.linkedin_url || "", sortOrder:row.sort_order });
 const mapBoard = (row) => ({ id:row.id, title:row.title, preview:row.preview_url, url:row.destination_url, sortOrder:row.sort_order });
 
 export function SiteContentProvider({ children }) {

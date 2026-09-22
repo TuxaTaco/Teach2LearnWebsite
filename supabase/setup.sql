@@ -28,9 +28,13 @@ create table if not exists public.team_members (
   name text not null check (char_length(name) between 1 and 120),
   role text not null check (char_length(role) between 1 and 160),
   image_url text not null,
+  linkedin_url text,
   sort_order integer not null default 0,
   updated_at timestamptz not null default now()
 );
+
+alter table public.team_members
+add column if not exists linkedin_url text;
 
 create table if not exists public.science_fair_boards (
   id uuid primary key default gen_random_uuid(),
