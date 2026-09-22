@@ -35,7 +35,7 @@ function LoginPanel({ onSignedIn }) {
     setError("");
     const result = await supabase.auth.signInWithPassword({ email, password });
     setWorking(false);
-    if (result.error) return setError("That email or password didn’t work.");
+    if (result.error) return setError(result.error.message || "That email or password didn’t work.");
     onSignedIn(result.data.session);
   }
 
