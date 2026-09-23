@@ -263,7 +263,65 @@ function NotFound() {
   return <section className="not-found section-pad"><div className="section-kicker">Page not found</div><h1>A small <em>detour.</em></h1><p>Let’s get you back to the learning.</p><Link className="dark-button" to="/">Return home <Arrow /></Link></section>;
 }
 
-const pageTitles = { "/": "Students teaching students", "/about": "Our story", "/workshops": "Science Fair & Destination Imagination Workshops", "/resources": "The resource library", "/team": "Meet the team", "/contact": "Get in touch" };
+const pageMeta = {
+  "/": {
+    title:"Teach2Learn Texas | Free STEM Workshops for Students",
+    description:"Teach2Learn is a student-led nonprofit in The Woodlands, Texas offering free Science Fair and Destination Imagination workshops for junior high students.",
+  },
+  "/about": {
+    title:"About Teach2Learn | Student-Led Nonprofit in Texas",
+    description:"Learn how Teach2Learn student mentors in The Woodlands help junior high students build curiosity, confidence, and practical STEM skills.",
+  },
+  "/workshops": {
+    title:"Free Student Workshops | Teach2Learn Texas",
+    description:"Explore Teach2Learn's free Science Fair and Destination Imagination workshops for junior high students in The Woodlands, Texas.",
+  },
+  "/resources": {
+    title:"Science Fair Resources & Example Boards | Teach2Learn",
+    description:"Use free science fair workshop slides, project guidance, and real example science fair boards created by Teach2Learn students and mentors.",
+  },
+  "/team": {
+    title:"Teach2Learn Team | Student Mentors in The Woodlands",
+    description:"Meet the high school student officers and mentors behind Teach2Learn's free workshops in The Woodlands, Texas.",
+  },
+  "/contact": {
+    title:"Contact Teach2Learn | The Woodlands, Texas",
+    description:"Contact Teach2Learn about free student workshops, mentorship, volunteering, or bringing a program to your school.",
+  },
+};
+
+const organizationSchema = {
+  "@context":"https://schema.org",
+  "@graph":[
+    {
+      "@type":"WebSite",
+      "@id":"https://weteach2learn.com/#website",
+      name:"Teach2Learn",
+      alternateName:["Teach2Learn Texas", "weteach2learn.com"],
+      url:"https://weteach2learn.com/",
+    },
+    {
+      "@type":"NonprofitOrganization",
+      "@id":"https://weteach2learn.com/#organization",
+      name:"Teach2Learn",
+      alternateName:"Teach2Learn Texas",
+      url:"https://weteach2learn.com/",
+      logo:"https://weteach2learn.com/teach2learn-logo.png",
+      description:"A student-led nonprofit providing free Science Fair and Destination Imagination workshops for junior high students.",
+      email:"officialteach2learn@gmail.com",
+      telephone:"+1-832-988-0322",
+      address:{
+        "@type":"PostalAddress",
+        streetAddress:"3701 College Park Dr",
+        addressLocality:"The Woodlands",
+        addressRegion:"TX",
+        postalCode:"77384",
+        addressCountry:"US",
+      },
+      sameAs:["https://www.instagram.com/officialteach2learn/"],
+    },
+  ],
+};
 
 function PageRoutes() {
   const location = useLocation();
@@ -303,15 +361,36 @@ function RouteMeta({ location }) {
   useEffect(() => {
     const isContentStudio = location.pathname.startsWith("/t2l-content");
     let canonical = document.querySelector('link[rel="canonical"]');
+    let description = document.querySelector('meta[name="description"]');
+    let structuredData = document.getElementById("t2l-organization-schema");
     if (!isContentStudio) {
-      document.title = `Teach2Learn | ${pageTitles[location.pathname] || "Page not found"}`;
+      const meta = pageMeta[location.pathname] || { title:"Page not found | Teach2Learn", description:"Return to Teach2Learn's free student workshops and educational resources." };
+      document.title = meta.title;
       if (!canonical) {
         canonical = document.createElement("link");
         canonical.rel = "canonical";
         document.head.appendChild(canonical);
       }
       canonical.href = `https://weteach2learn.com${location.pathname}`;
-    } else canonical?.remove();
+      if (!description) {
+        description = document.createElement("meta");
+        description.name = "description";
+        document.head.appendChild(description);
+      }
+      description.content = meta.description;
+      if (location.pathname === "/") {
+        if (!structuredData) {
+          structuredData = document.createElement("script");
+          structuredData.id = "t2l-organization-schema";
+          structuredData.type = "application/ld+json";
+          document.head.appendChild(structuredData);
+        }
+        structuredData.textContent = JSON.stringify(organizationSchema);
+      } else structuredData?.remove();
+    } else {
+      canonical?.remove();
+      structuredData?.remove();
+    }
     // This runs after the incoming page mounts, and also for same-page links.
     if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView({ behavior: "instant" });
     else window.scrollTo({ top: 0, behavior: "instant" });
