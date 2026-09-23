@@ -68,7 +68,7 @@ function Footer() {
         <div className="footer-links"><Link to="/about">Our story</Link><Link to="/workshops">Workshops</Link><Link to="/resources">Resources</Link><Link to="/team">Our team</Link></div>
         <div className="footer-contact"><a href="mailto:officialteach2learn@gmail.com">Say hello <Arrow diagonal /></a><a href="https://www.instagram.com/officialteach2learn/" target="_blank" rel="noreferrer">Find us on Instagram <Arrow diagonal /></a></div>
       </div>
-      <div className="footer-bottom"><span>Students teaching students.</span><span>Teach2Learn · Student-led nonprofit</span><Link to="/contact">Contact us <Arrow /></Link></div>
+      <div className="footer-bottom"><span>Students teaching students.</span><span>Teach2Learn · Student-led nonprofit</span><address>3701 College Park Dr</address><Link to="/contact">Contact us <Arrow /></Link></div>
     </footer>
   );
 }

@@ -295,6 +295,7 @@ svg { flex-shrink:0; }
 .footer-contact>a { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid #ffffff30; font-size:11px; }
 .footer-contact .arrow-icon { width:15px; height:15px; color:var(--yellow); }
 .footer-bottom { border-top:1px solid #ffffff30; padding-top:17px; display:flex; justify-content:space-between; align-items:center; gap:24px; color:#9eb4c6; font-size:9px; }
+.footer-bottom address { font-style:normal; }
 .footer-bottom>a { display:flex; align-items:center; gap:20px; }
 .footer-bottom .arrow-icon { width:14px; height:14px; }
 .not-found { min-height:65vh; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:24px; }
