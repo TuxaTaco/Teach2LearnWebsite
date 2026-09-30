@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { isSupabaseConfigured, supabase } from "./supabase.js";
-import { useSiteContent } from "./site-content.jsx";
+import { decodeTeamImage, encodeTeamImage, useSiteContent } from "./site-content.jsx";
 
 const newId = () => crypto.randomUUID();
 
@@ -131,7 +131,7 @@ export default function AdminPage() {
       ]);
       if (teamResult.error || boardResult.error) setMessage("The editor could not load the saved content.");
       else {
-        setTeam(teamResult.data.map((item) => ({ id:item.id, name:item.name, role:item.role, image:item.image_url, linkedin:item.linkedin_url || "" })));
+        setTeam(teamResult.data.map((item) => ({ id:item.id, name:item.name, role:item.role, ...decodeTeamImage(item.image_url), linkedin:item.linkedin_url || "" })));
         setBoards(boardResult.data.map((item) => ({ id:item.id, title:item.title, url:item.destination_url, preview:item.preview_url })));
       }
       setChecking(false);
@@ -161,7 +161,14 @@ export default function AdminPage() {
   async function saveAll() {
     setSaving(true);
     setMessage("");
-    const teamRows = team.map((item, index) => ({ id:item.id, name:item.name.trim(), role:item.role.trim(), image_url:item.image, linkedin_url:item.linkedin?.trim() || null, sort_order:index }));
+    const teamRows = team.map((item, index) => ({
+      id:item.id,
+      name:item.name.trim(),
+      role:item.role.trim(),
+      image_url:encodeTeamImage(item.image, item.imagePositionX, item.imagePositionY),
+      linkedin_url:item.linkedin?.trim() || null,
+      sort_order:index,
+    }));
     const boardRows = boards.map((item, index) => ({ id:item.id, title:item.title.trim(), destination_url:item.url.trim(), preview_url:item.preview, sort_order:index }));
     const operations = [
       teamRows.length ? supabase.from("team_members").upsert(teamRows) : Promise.resolve({ error:null }),
@@ -192,12 +199,21 @@ export default function AdminPage() {
         {message && <div className="admin-alert">{message}</div>}
 
         <section className="admin-editor-section">
-          <div className="admin-section-heading"><div><h2>Team members</h2><p>Names, positions, portrait photographs, and optional LinkedIn profiles.</p></div><button className="admin-secondary" onClick={() => setTeam((items) => [...items, { id:newId(), name:"", role:"", image:"/teach2learn-logo.png", linkedin:"" }])}>Add position</button></div>
+          <div className="admin-section-heading"><div><h2>Team members</h2><p>Names, positions, portrait photographs, framing, and optional LinkedIn profiles.</p></div><button className="admin-secondary" onClick={() => setTeam((items) => [...items, { id:newId(), name:"", role:"", image:"/teach2learn-logo.png", linkedin:"", imagePositionX:50, imagePositionY:50 }])}>Add position</button></div>
           <div className="admin-list">
             {team.map((member, index) => (
               <article className="admin-item team-admin-item" key={member.id}>
-                <div className="admin-image-field"><img src={member.image} alt="" /><label>Replace photo<input type="file" accept="image/*" onChange={(event) => chooseImage(event.target.files[0], "team", (url) => updateTeam(index, "image", url))} /></label></div>
-                <div className="admin-fields"><label>Name<input value={member.name} onChange={(event) => updateTeam(index, "name", event.target.value)} /></label><label>Position<input value={member.role} onChange={(event) => updateTeam(index, "role", event.target.value)} /></label><label className="admin-wide-field">LinkedIn profile <span>(optional)</span><input type="url" placeholder="https://www.linkedin.com/in/username" value={member.linkedin || ""} onChange={(event) => updateTeam(index, "linkedin", event.target.value)} /></label></div>
+                <div className="admin-image-field"><img src={member.image} alt={`${member.name || "Team member"} framing preview`} style={{ objectPosition:`${member.imagePositionX ?? 50}% ${member.imagePositionY ?? 50}%` }} /><label>Replace photo<input type="file" accept="image/*" onChange={(event) => chooseImage(event.target.files[0], "team", (url) => updateTeam(index, "image", url))} /></label></div>
+                <div className="admin-fields">
+                  <label>Name<input value={member.name} onChange={(event) => updateTeam(index, "name", event.target.value)} /></label>
+                  <label>Position<input value={member.role} onChange={(event) => updateTeam(index, "role", event.target.value)} /></label>
+                  <label className="admin-wide-field">LinkedIn profile <span>(optional)</span><input type="url" placeholder="https://www.linkedin.com/in/username" value={member.linkedin || ""} onChange={(event) => updateTeam(index, "linkedin", event.target.value)} /></label>
+                  <div className="admin-crop-controls admin-wide-field">
+                    <div className="admin-crop-heading"><span>Photo framing</span><button type="button" onClick={() => setTeam((items) => items.map((item, itemIndex) => itemIndex === index ? { ...item, imagePositionX:50, imagePositionY:50 } : item))}>Center</button></div>
+                    <label><span>Left</span><input type="range" min="0" max="100" value={member.imagePositionX ?? 50} onChange={(event) => updateTeam(index, "imagePositionX", Number(event.target.value))} aria-label={`Horizontal photo position for ${member.name || "team member"}`} /><span>Right</span></label>
+                    <label><span>Up</span><input type="range" min="0" max="100" value={member.imagePositionY ?? 50} onChange={(event) => updateTeam(index, "imagePositionY", Number(event.target.value))} aria-label={`Vertical photo position for ${member.name || "team member"}`} /><span>Down</span></label>
+                  </div>
+                </div>
                 <div className="admin-item-actions"><button aria-label="Move up" onClick={() => setTeam((items) => moveItem(items, index, -1))}>↑</button><button aria-label="Move down" onClick={() => setTeam((items) => moveItem(items, index, 1))}>↓</button><button className="is-danger" onClick={() => { setDeletedTeam((items) => [...items, member.id]); setTeam((items) => items.filter((item) => item.id !== member.id)); }}>Remove</button></div>
               </article>
             ))}
